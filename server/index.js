@@ -5,12 +5,12 @@ import cors from "cors";
 const app = express();
 
 //middlewares
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:5173"]}));
 
 
 // First query to get the version of the database
 async function getPgVersion(){
-    const version = await sql`select version()`;
+    const version = await sql`SELECT VERSION()`;
     return version;
 }
 
@@ -46,8 +46,14 @@ app.get("/", async (req, res) => {
 
 app.get("/api/v1/todos", async (req, res) => {
     try {
-        res.json(data);
+        const todos = await sql`SELECT * FROM todos`;
+        if (todos) {
+            res.send(todos);
+            return;
+        }
 
+        res.status(403).send("Unable to select todos")
+        return;
     } catch (error) {
         res.send(error);
     }
@@ -58,5 +64,5 @@ app.get("*", (req, res) =>{
 });
 
 app.listen(3000, () => {
-    console.log("Hello");
+    console.log("Hello server started at port 3000");
 });

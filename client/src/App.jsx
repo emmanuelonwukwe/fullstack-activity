@@ -25,13 +25,13 @@ function App() {
           type="text"
           placeholder="Enter todo"
           className="bg-slate-500 text-white font-bold placeholder:text-green-200 border-2 rounded-xl p-2 border-solid border-black"
-        />{" "}
-        <button type="button">Add</button>
-        <ul>
-          {todos.map((todo, i) => (
+        />
+        <button type="button" className="font-bold ml-1 bg-slate-500 rounded-lg p-2 text-white">Add</button>
+        <ul className="mt-2">
+          {todos.length == 0 ? <h1>Nothing found yet</h1> : todos.map((todo, i) => (
             <li key={i}>
               <input type="checkbox" />Id-{todo.id} {todo.task}
-              <button type="button">Delete</button>
+              <button type="button" className="ml-2">Delete</button>
             </li>
           ))}
         </ul>
