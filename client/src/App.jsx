@@ -7,13 +7,38 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       //Fetching code here to set our todos
-      const response = await fetch("http://localhost:3000/api/v1/todos");
+      const response = await fetch("http://localhost:3000/api/todos");
       const data = await response.json();
       setTodos(data);
     };
 
     fetchData();
   }, []);
+
+  async function addTodo() {
+    try {
+      const response = await fetch("http://localhost:3000/api/todos2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          task: "Wash clothes",
+          is_completed: false
+        }),
+      });
+
+      // get response in json
+      const data = await response.json();
+
+      // Set the todos after it had been returned
+      setTodos((oldTodos) => ([...oldTodos, ...data]))
+      console.log(data);
+      // setting data
+    } catch (error) {
+      console.log("Adding to todo error occured: " + error)
+    }
+  }
 
   return (
     <>
@@ -26,14 +51,27 @@ function App() {
           placeholder="Enter todo"
           className="bg-slate-500 text-white font-bold placeholder:text-green-200 border-2 rounded-xl p-2 border-solid border-black"
         />
-        <button type="button" className="font-bold ml-1 bg-slate-500 rounded-lg p-2 text-white">Add</button>
+        <button
+          type="button"
+          className="font-bold ml-1 bg-slate-500 rounded-lg p-2 text-white"
+          onClick={addTodo}
+        >
+          Add
+        </button>
         <ul className="mt-2">
-          {todos.length == 0 ? <h1>Nothing found yet</h1> : todos.map((todo, i) => (
-            <li key={i}>
-              <input type="checkbox" />Id-{todo.id} {todo.task}
-              <button type="button" className="ml-2">Delete</button>
-            </li>
-          ))}
+          {todos.length > 0 ? (
+            todos.map((todo, i) => (
+              <li key={i}>
+                <input type="checkbox" />
+                Id-{todo.id} {todo.task}
+                <button type="button" className="ml-2">
+                  Delete
+                </button>
+              </li>
+            ))
+          ) : (
+            <h1>Nothing found yet</h1>
+          )}
         </ul>
       </div>
     </>
