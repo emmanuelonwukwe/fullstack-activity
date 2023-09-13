@@ -32,6 +32,9 @@ app.get("/", async (req, res) => {
   }
 });
 
+/**
+ * This endpoint returns all the todos from the database
+ */
 app.get("/api/todos", async (req, res) => {
   try {
     const todos = await sql`SELECT * FROM todos`;
@@ -47,6 +50,10 @@ app.get("/api/todos", async (req, res) => {
   }
 });
 
+
+/**
+ * This endpoint posts new todo data to be created to the database
+ */
 app.post("/api/todos2", async (req, res) => {
   try {
     const { task, is_completed } = req.body;
@@ -60,6 +67,10 @@ app.post("/api/todos2", async (req, res) => {
   }
 });
 
+/**
+ * Call this endpoint to delete a particular todo with id(:id) from the database
+ * @param {string} id - The id of the todo to be deleted
+ */
 app.delete("/api/todos/delete/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -76,6 +87,7 @@ app.delete("/api/todos/delete/:id", async (req, res) => {
   }
 });
 
+// This is an unknown route
 app.get("*", (req, res) => {
   res.send("Unknown route");
 });
