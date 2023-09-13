@@ -68,6 +68,27 @@ app.post("/api/todos2", async (req, res) => {
 });
 
 /**
+ * Call this endpoint to update a particular todo with id(:id) in the database
+ * @param {string} id - The id of the todo to be updated
+ */
+app.put("/api/todos/update/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { task, is_completed } = req.body;
+
+    // Delete the data from the db
+    await sql`UPDATE todos SET task = ${task}, is_completed = ${is_completed}  WHERE id=${id}`;
+
+    res.json({
+      status: "success",
+      message: "Successfully updated",
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+/**
  * Call this endpoint to delete a particular todo with id(:id) from the database
  * @param {string} id - The id of the todo to be deleted
  */
