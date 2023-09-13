@@ -21,6 +21,7 @@ async function getPgVersion() {
   return version;
 }
 
+// This endpoint returns the version of the postgres
 app.get("/", async (req, res) => {
   try {
     const version = await getPgVersion();
@@ -68,7 +69,7 @@ app.delete("/api/todos/delete/:id", async (req, res) => {
 
     res.json({
       status: "success",
-      message: "Successfully deleted"
+      message: "Successfully deleted",
     });
   } catch (error) {
     res.status(500).json(error);

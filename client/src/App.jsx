@@ -9,14 +9,12 @@ function App() {
     const fetchData = async () => {
       try {
         //Fetching code here to set our todos
-      const response = await fetch("http://localhost:3000/api/todos");
-      const data = await response.json();
-      setTodos(data);
-        
+        const response = await fetch("http://localhost:3000/api/todos");
+        const data = await response.json();
+        setTodos(data);
       } catch (error) {
         console.log("Error occured: " + error);
       }
-      
     };
 
     fetchData();
@@ -34,7 +32,7 @@ function App() {
   const handleAddTodoSubmit = async (event) => {
     event.preventDefault();
 
-    if (task == '') {
+    if (task == "") {
       throw new Error("Sorry, you can not create empty todo");
     }
 
@@ -76,11 +74,10 @@ function App() {
         // Set fetch and set the remaining todos
         fetchAndSetTodos();
       }
-      
     } catch (error) {
       console.log("Adding to todo error occured: " + error);
     }
-  }
+  };
 
   return (
     <>
