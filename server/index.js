@@ -77,12 +77,9 @@ app.put("/api/todos/update/:id", async (req, res) => {
     const { task, is_completed } = req.body;
 
     // Delete the data from the db
-    await sql`UPDATE todos SET task = ${task}, is_completed = ${is_completed}  WHERE id=${id}`;
+    const todoArr = await sql`UPDATE todos SET task = ${task}, is_completed = ${is_completed} WHERE id=${id} RETURNING *`;
 
-    res.json({
-      status: "success",
-      message: "Successfully updated",
-    });
+    res.json(todoArr);
   } catch (error) {
     res.status(500).json(error);
   }
