@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import Spinner from "./components/Spinner";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
   const [taskIsCompleted, setTaskIsCompleted] = useState(false);
-  const [todoToUpdate, setTodoToUpdate] = useState({});
+  const [todoToUpdate, setTodoToUpdate] = useState({
+    task: "",
+    is_completed: false,
+  });
+  const [spinnerIsloading, setSpinnerIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,8 +39,14 @@ function App() {
   const handleAddTodoSubmit = async (event) => {
     event.preventDefault();
 
+    // Start the spinner
+    setSpinnerIsLoading(true);
+
     if (task == "") {
-      throw new Error("Sorry, you can not create empty todo");
+      alert("Fill the task form before adding");
+      setSpinnerIsLoading(false);
+      return;
+      //throw new Error("Sorry, you can not create empty todo");
     }
 
     try {
@@ -55,8 +66,9 @@ function App() {
 
       // Set the todos after it had been returned
       setTodos((oldTodos) => [...oldTodos, ...data]);
-      //console.log(data);
-      // setting data
+
+      // Stop the spinner
+      setSpinnerIsLoading(false);
     } catch (error) {
       console.log("Adding to todo error occured: " + error);
     }
@@ -65,6 +77,8 @@ function App() {
   // This function helps to add the todo task to the list of todos
   const handleUpdateTodoSubmit = async (event) => {
     event.preventDefault();
+    // Start the spinner
+    setSpinnerIsLoading(true);
 
     try {
       const response = await fetch(
@@ -75,8 +89,8 @@ function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            task: task,
-            is_completed: taskIsCompleted,
+            task: task || todoToUpdate.task,
+            is_completed: JSON.parse(taskIsCompleted),
           }),
         }
       );
@@ -85,10 +99,10 @@ function App() {
         // Set fetch and set the remaining todos
         fetchAndSetTodos();
         closeModal();
-      }
 
-      //console.log(data);
-      // setting data
+        // Stop the spinner
+        setSpinnerIsLoading(false);
+      }
     } catch (error) {
       console.log("Adding to todo error occured: " + error);
     }
@@ -96,6 +110,9 @@ function App() {
 
   // This function helps to add the todo task to the list of todos
   const handleTodoDelete = async (todoId) => {
+    // Start the spinner
+    setSpinnerIsLoading(true);
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/todos/delete/${todoId}`,
@@ -107,6 +124,8 @@ function App() {
       if (response) {
         // Set fetch and set the remaining todos
         fetchAndSetTodos();
+        // Stop the spinner
+        setSpinnerIsLoading(false);
       }
     } catch (error) {
       console.log("Adding to todo error occured: " + error);
@@ -128,6 +147,7 @@ function App() {
   return (
     <>
       <div>
+        {spinnerIsloading && <Spinner />}
         <h1 className="text-green-500 font-semibold text-2xl mt-4 mb-3">
           To-do list
         </h1>
@@ -147,13 +167,18 @@ function App() {
           </button>
         </form>
 
-        <ul className="mt-2">
+        <ul className="mt-2 bg-slate-300 p-5">
           {todos.length > 0 ? (
             todos.map((todo, i) => (
               <li key={i} className="m-2 p-2 border border-t-2">
-                <input type="checkbox" className="mr-1" />
+                <input
+                  type="checkbox"
+                  className="mr-1"
+                  checked={todo.is_completed ? "checked" : ""}
+                  readOnly
+                />
                 <span>
-                  Id-{todo.id} {todo.task}
+                  Id-{todo.id} <span className="font-bold">{todo.task}</span>
                 </span>
                 <button
                   onClick={() => {
@@ -175,7 +200,7 @@ function App() {
               </li>
             ))
           ) : (
-            <h1>Nothing found yet</h1>
+            <h1>Nothing found</h1>
           )}
         </ul>
         <div
@@ -238,12 +263,19 @@ function App() {
                     className="bg-slate-500 text-white font-bold placeholder:text-green-200 border-2 rounded-xl p-2 border-solid border-black"
                   />
                   <select
-                    name="is_completed"
                     className="ml-2"
                     onChange={(event) => setTaskIsCompleted(event.target.value)}
+                    defaultValue={todoToUpdate.is_completed}
                   >
-                    <option value={false}>False</option>
-                    <option value={true}>True</option>
+                    <option
+                      value={false}
+                      title="I have not completed this task"
+                    >
+                      Pending
+                    </option>
+                    <option value={true} title="I have completed this task">
+                      Done
+                    </option>
                   </select>
                   <button
                     type="submit"

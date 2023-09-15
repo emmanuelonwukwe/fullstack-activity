@@ -50,7 +50,6 @@ app.get("/api/todos", async (req, res) => {
   }
 });
 
-
 /**
  * This endpoint posts new todo data to be created to the database
  */
@@ -77,7 +76,8 @@ app.put("/api/todos/update/:id", async (req, res) => {
     const { task, is_completed } = req.body;
 
     // Delete the data from the db
-    const todoArr = await sql`UPDATE todos SET task = ${task}, is_completed = ${is_completed} WHERE id=${id} RETURNING *`;
+    const todoArr =
+      await sql`UPDATE todos SET task = ${task}, is_completed = ${is_completed} WHERE id=${id} RETURNING *`;
 
     res.json(todoArr);
   } catch (error) {
