@@ -148,55 +148,69 @@ function App() {
     <>
       <div>
         {spinnerIsloading && <Spinner />}
-        <h1 className="text-green-500 font-semibold text-2xl mt-4 mb-3">
+
+        <h1 className="text-green-500 font-semibold text-5xl mt-3 mb-6">
           To-do list
         </h1>
         <form onSubmit={handleAddTodoSubmit}>
-          <input
-            type="text"
-            placeholder="Enter todo"
-            onChange={(event) => setTask(event.target.value)}
-            value={task}
-            className="bg-slate-500 text-white font-bold placeholder:text-green-200 border-2 rounded-xl p-2 border-solid border-black"
-          />
-          <button
-            type="submit"
-            className="font-bold ml-1 bg-slate-500 rounded-lg p-2 text-white"
-          >
-            Add
-          </button>
+          <div className="flex items-center justify-center">
+            <input
+              type="text"
+              placeholder="Enter task"
+              onChange={(event) => setTask(event.target.value)}
+              value={task}
+              className="max-w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+            />
+            <button
+              type="submit"
+              className="font-bold  bg-slate-500 rounded-sm p-2 text-white"
+            >
+              Add
+            </button>
+          </div>
         </form>
 
-        <ul className="mt-2 bg-slate-300 p-5">
+        <ul className="bg-white shadow overflow-hidden sm:rounded-md max-w-lg mx-auto mt-5">
           {todos.length > 0 ? (
             todos.map((todo, i) => (
-              <li key={i} className="m-2 p-2 border border-t-2">
-                <input
-                  type="checkbox"
-                  className="mr-1"
-                  checked={todo.is_completed ? "checked" : ""}
-                  readOnly
-                />
-                <span>
-                  Id-{todo.id} <span className="font-bold">{todo.task}</span>
-                </span>
-                <button
-                  onClick={() => {
-                    setTodoToUpdate(todo);
-                    openModal();
-                  }}
-                  type="button"
-                  className="ml-2 font-bold  bg-blue-500 rounded-lg p-2 text-white"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleTodoDelete(todo.id)}
-                  type="button"
-                  className="ml-2 font-bold  bg-red-500 rounded-lg p-2 text-white"
-                >
-                  Delete
-                </button>
+              <li key={i} className="border-t border-gray-200">
+                <div className="px-4 py-5 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-md w-20 mr-4 leading-6 font-medium text-gray-900">
+                      Task {i + 1}
+                    </h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      {todo.task}
+                    </p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-sm font-medium text-gray-500">
+                      Status:{" "}
+                      <span className="text-green-600">
+                        {todo.is_completed ? "Completed" : "Pending"}
+                      </span>
+                    </p>
+                    <div>
+                      <a
+                        href="#"
+                        onClick={() => {
+                          setTodoToUpdate(todo);
+                          openModal();
+                        }}
+                        className="font-medium text-indigo-600 hover:text-indigo-500 mr-2"
+                      >
+                        Edit
+                      </a>
+                      <button
+                        onClick={() => handleTodoDelete(todo.id)}
+                        type="button"
+                        className="font-bold  bg-red-500 rounded-lg p-1 text-xs text-white"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </li>
             ))
           ) : (
@@ -207,7 +221,7 @@ function App() {
           id="popup-modal"
           className="fixed w-full h-full top-0 z-50 hidden bg-black"
         >
-          <div className="relative left-0 top-6 max-w-md md:left-[25%]">
+          <div className="flex justify-center items-center mt-10">
             <div className="bg-white rounded-lg shadow dark:bg-gray-700">
               <button
                 type="button"
@@ -274,7 +288,7 @@ function App() {
                       Pending
                     </option>
                     <option value={true} title="I have completed this task">
-                      Done
+                      Completed
                     </option>
                   </select>
                   <button
